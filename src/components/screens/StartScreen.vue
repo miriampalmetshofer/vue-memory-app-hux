@@ -5,6 +5,7 @@ import {Button} from '@/components/ui/button'
 import GamesTable from '../GamesTable.vue';
 import { GAMES_DATA_STORAGE_KEY } from '../../globals/GamesDataStorageKey';
 import { GameData } from '../../types/GameData';
+import { getTopThreeScores } from '../../utils/getTopThreeScores';
 
 const gamesData = ref<GameData[]>([])
 
@@ -12,17 +13,6 @@ onBeforeMount(() => {
   const storageData = localStorage.getItem(GAMES_DATA_STORAGE_KEY);
   gamesData.value = getTopThreeScores(storageData ? JSON.parse(storageData) : [])
 })
-
-
-function getTopThreeScores(games: Game[]) {
-  if (games) {
-    const sortedGames = games.sort((a, b) => b.level - a.level);
-    const topThree = sortedGames.slice(0, 3);
-    return topThree;
-  } else {
-    return [];
-  }
-}
 
 </script>
 
