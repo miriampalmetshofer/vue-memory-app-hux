@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import ThemeToggle from "@/components/ThemeToggle.vue";
+import Layout from "@/Layout.vue";
 </script>
 
 <template>
   <div>
-    <ThemeToggle />
-    <router-view></router-view>
+    <Layout>
+      <router-view></router-view>
+    </Layout>
   </div>
 </template>
 
