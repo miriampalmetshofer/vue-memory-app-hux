@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
-import Config from "../../components/screens/ConfigScreen.vue"; // Adjust path to your component
+import Config from "../../components/screens/ConfigScreen.vue";
 import { createPinia, setActivePinia } from "pinia";
 import { useRouter } from "vue-router";
 import { router } from '../../routing/router';
@@ -16,17 +16,15 @@ vi.mock('../../store/game', () => ({
   },
 }));
 
-describe("Config Component", () => {
-  const mockPush = vi.fn();
+describe("Config Screen", () => {
   vi.mocked(useRouter).mockReturnValue({
     ...router,
-    push: mockPush,
+    push: vi.fn(),
   });
 
   beforeEach(() => {
     const pinia = createPinia();
     setActivePinia(pinia);
-    mockPush.mockReset();
   });
 
   it('should show an error message when nickname is too short', async () => {
