@@ -29,20 +29,22 @@ const gameStore = useGameStore()
 const formSchema = toTypedSchema(
   z.object({
     nickname: z.string().min(2).max(50),
-    gameMode: z.enum([GameMode.MAX_FLIPS, GameMode.TIMER], {
-      required_error: "Game mode is required.",
-    }),
+    gameMode: z.preprocess(
+      (value) => (value === '' ? undefined : value), 
+      z.enum([GameMode.MAX_FLIPS, GameMode.TIMER], {
+        required_error: 'Game mode is required', 
+      })
+    ),
   })
-)
+);
 
 const form = useForm({
   validationSchema: formSchema,
 })
 
 const onSubmit = form.handleSubmit((values) => {
-   console.log('Form Submitted', values)
-  gameStore.nickname = values.nickname
-  gameStore.gameMode = values.gameMode
+  gameStore.updateNickname(values.nickname);
+  gameStore.updateGameMode(values.gameMode);
   router.push('/game') 
 })
 </script>
