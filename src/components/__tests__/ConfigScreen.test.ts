@@ -1,7 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import Config from "../../components/screens/ConfigScreen.vue";
-import { createPinia, setActivePinia } from "pinia";
 import { useRouter } from "vue-router";
 import { router } from '../../routing/router';
 import waitForExpect from 'wait-for-expect';
@@ -20,11 +19,6 @@ describe("Config Screen", () => {
   vi.mocked(useRouter).mockReturnValue({
     ...router,
     push: vi.fn(),
-  });
-
-  beforeEach(() => {
-    const pinia = createPinia();
-    setActivePinia(pinia);
   });
 
   it('should show an error message when nickname is too short', async () => {
