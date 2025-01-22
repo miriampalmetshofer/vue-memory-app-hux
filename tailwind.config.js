@@ -1,6 +1,8 @@
+// eslint-disable-next-line
 const animate = require("tailwindcss-animate")
 
 /** @type {import('tailwindcss').Config} */
+// eslint-disable-next-line
 module.exports = {
   darkMode: ["class"],
   safelist: ["dark"],

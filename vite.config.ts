@@ -5,6 +5,7 @@ import tailwind from 'tailwindcss'
 import { fileURLToPath, URL } from 'node:url'
 
 // https://vite.dev/config/
+
 export default defineConfig({
   css: {
     postcss: {
@@ -12,6 +13,7 @@ export default defineConfig({
     },
   },
   plugins: [vue()],
+  // @ts-ignore
   test: {
     environment: 'jsdom',
   },
