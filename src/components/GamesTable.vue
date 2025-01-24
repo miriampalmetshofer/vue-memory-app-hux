@@ -31,12 +31,15 @@ defineProps<{
       </TableRow>
     </TableHeader>
     <TableBody>
-      <TableRow v-for="gameData in gamesData">
+      <TableRow
+        v-for="(gameData, index) in gamesData"
+        :key="index"
+      >
         <TableCell class="font-medium">
           {{ gameData.nickname }}
         </TableCell>
         <TableCell>
-            {{ gameData.gameMode }}
+          {{ gameData.gameMode }}
         </TableCell>
         <TableCell class="text-right">
           {{ gameData.level }}

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { router } from '../../routing/router'
+import { router } from '@/routing/router.ts'
 import { Button } from '@/components/ui/button'
-import { useGameStore, GameMode } from '../../store/game'
+import { useGameStore, GameMode } from '@/store/game.ts'
 import {
   Select,
   SelectContent,
@@ -51,14 +51,25 @@ const onSubmit = form.handleSubmit((values) => {
 
 <template>
   <div class="flex flex-col items-center space-y-6">
-    <h1 class="text-3xl font-black">Game Configuration</h1>
-    <form @submit.prevent="onSubmit" class="space-y-4">
-
-      <FormField v-slot="{ field }" name="nickname">
+    <h1 class="text-3xl font-black">
+      Game Configuration
+    </h1>
+    <form
+      class="space-y-4"
+      @submit.prevent="onSubmit"
+    >
+      <FormField
+        v-slot="{ field }"
+        name="nickname"
+      >
         <FormItem>
           <FormLabel>Nickname</FormLabel>
           <FormControl>
-            <Input type="text" placeholder="Nickname" v-bind="field" />
+            <Input
+              type="text"
+              placeholder="Nickname"
+              v-bind="field"
+            />
           </FormControl>
           <FormDescription>
             This is your nickname for the game.
@@ -67,7 +78,10 @@ const onSubmit = form.handleSubmit((values) => {
         </FormItem>
       </FormField>
 
-      <FormField v-slot="{ field }" name="gameMode">
+      <FormField
+        v-slot="{ field }"
+        name="gameMode"
+      >
         <FormItem>
           <FormLabel>Game Mode</FormLabel>
           <FormControl>
@@ -78,8 +92,12 @@ const onSubmit = form.handleSubmit((values) => {
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Game Mode</SelectLabel>
-                  <SelectItem :value="GameMode.MAX_FLIPS">Flip Limit</SelectItem>
-                  <SelectItem :value="GameMode.TIMER">Time Limit</SelectItem>
+                  <SelectItem :value="GameMode.MAX_FLIPS">
+                    Flip Limit
+                  </SelectItem>
+                  <SelectItem :value="GameMode.TIMER">
+                    Time Limit
+                  </SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -91,7 +109,9 @@ const onSubmit = form.handleSubmit((values) => {
         </FormItem>
       </FormField>
       <div class="flex flex-col items-center mt-6">
-        <Button type="submit">Start Game</Button>
+        <Button type="submit">
+          Start Game
+        </Button>
       </div>
     </form>
   </div>
