@@ -8,7 +8,7 @@ describe('useGameLogic', () => {
     let game: GameLogic;
 
     beforeEach(() => {
-        game = useGameLogic();
+        game = useGameLogic(15);
     });
 
     it('initializes with correct default values', () => {
