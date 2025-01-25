@@ -1,19 +1,33 @@
 import {ref, reactive, watch} from 'vue';
+import {useTimer} from './useTimer'; // Import the useTimer composable
 import {GameData} from "@/types/GameData.ts";
 import {Card} from "@/types/Card.ts";
 import {GameLogic} from "@/types/GameLogic.ts";
+import {GameMode} from "@/store/game.ts";
 
-
-export function useGameLogic(): GameLogic {
+export function useGameLogic(baseTime: number): GameLogic {
     const level = ref<number>(1);
     const cards = ref<Card[]>([]);
     const flippedCards = ref<Card[]>([]);
 
+    const {timeRemaining, resetTimer, resumeTimer} = useTimer(baseTime, gameOver);
+
     const config = reactive<GameData>({
         nickname: 'Player1',
-        gameMode: 'easy',
+        gameMode: GameMode.TIMER,
         level: 1,
     });
+
+    function gameOver() {
+        alert("Game Over!");
+        level.value = 1;
+        resetTimer(baseTime);
+    }
+
+    function increaseTimer() {
+        resumeTimer();
+        resetTimer(baseTime + (level.value - 1) * 5);
+    }
 
     const generateCards = (): void => {
         const numCards = level.value * 2 + 2;
@@ -61,6 +75,7 @@ export function useGameLogic(): GameLogic {
         const allMatched = cards.value.every((card) => card.is_matched);
         if (allMatched) {
             level.value += 1;
+            increaseTimer();
         }
     };
 
@@ -105,6 +120,8 @@ export function useGameLogic(): GameLogic {
         cards,
         flippedCards,
         handleClick,
-        config
+        config,
+        timeRemaining,
+        resetTimer
     };
 }

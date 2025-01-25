@@ -7,6 +7,9 @@
       <h2 class="text-lg font-semibold">
         Nickname: {{ config.nickname }}
       </h2>
+      <div v-if="config.gameMode === GameMode.TIMER" class="text-xl font-medium mt-2">
+        Time Remaining: {{ timeRemaining }}s
+      </div>
     </div>
     <div class="flex justify-center">
       <div
@@ -44,8 +47,9 @@
 <script setup lang="ts">
 import {useGameLogic} from '@/composable/useGameLogic.ts';
 import {ref, onMounted, onBeforeUnmount} from 'vue';
+import {DefaultGameModeValues, GameMode} from "@/store/game.ts";
 
-const {level, cards, handleClick, config} = useGameLogic();
+const {level, cards, handleClick, config, timeRemaining} = useGameLogic(DefaultGameModeValues.BASE_TIME);
 
 const cardSize = ref(100);
 
