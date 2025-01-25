@@ -8,6 +8,7 @@ export type GameLogic = {
     flippedCards: Ref<Card[]>;
     config: GameData;
     timeRemaining: Ref<number>;
+    flipsRemaining: Ref<number>;
     handleClick: (card: Card) => void;
-    resetTimer: (time: number) => void;
+    startTimer: () => void;
 }

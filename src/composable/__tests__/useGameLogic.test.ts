@@ -1,14 +1,17 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { nextTick } from 'vue';
-import {useGameLogic} from '@/composable/useGameLogic';
-import {Card} from "@/types/Card.ts";
-import {GameLogic} from "@/types/GameLogic.ts";
+import { useGameLogic } from '@/composable/useGameLogic';
+import { Card } from "@/types/Card.ts";
+import { GameLogic } from "@/types/GameLogic.ts";
+import { GameMode } from "@/store/game.ts";
 
 describe('useGameLogic', () => {
     let game: GameLogic;
+    const baseTime = 2;
+    const baseFlips = 4;
 
     beforeEach(() => {
-        game = useGameLogic(15);
+        game = useGameLogic(baseTime, baseFlips);
     });
 
     it('initializes with correct default values', () => {
@@ -18,15 +21,14 @@ describe('useGameLogic', () => {
         expect(game.config.nickname).toBe('Player1');
     });
 
-    it('generates the correct number of cards for the current level', () => {
-        game.level.value = 2;
+    it('generates the correct number of cards for the current level', async () => {
         expect(game.cards.value).toHaveLength(4);
-
-        game.level.value = 3;
-        expect(game.cards.value).toHaveLength(4);
+        game.level.value += 1;
+        await nextTick();
+        expect(game.cards.value).toHaveLength(6);
     });
 
-     it('shuffles the cards after generation', async () => {
+    it('shuffles the cards after generation', async () => {
         const originalOrder = [...game.cards.value];
         game.level.value += 1;
         await nextTick();
@@ -95,4 +97,41 @@ describe('useGameLogic', () => {
         expect(game.flippedCards.value).toEqual([]);
         expect(game.cards.value.every((c) => !c.is_flipped)).toBe(true);
     });
+
+    it('increases flips when advancing to the next level in MAX_FLIPS mode', async () => {
+        game.config.gameMode = GameMode.MAX_FLIPS;
+        game.level.value = 1;
+
+        const initialFlips = game.flipsRemaining.value;
+        await completeLevel(game);
+
+        expect(game.flipsRemaining.value).toBe(initialFlips + 5);
+    });
+
+    it('increases timer when advancing to the next level in TIMER mode', async () => {
+        game.config.gameMode = GameMode.TIMER;
+        game.level.value = 1;
+
+        const initialTime = game.timeRemaining.value;
+        await completeLevel(game);
+
+        expect(game.level.value).toBe(2);
+        expect(game.timeRemaining.value).toBe(initialTime + 5);
+    });
+
+    async function completeLevel(game: GameLogic) {
+        const pairs: Record<number, Card[]> = {};
+
+        game.cards.value.forEach((card) => {
+            if (!pairs[card.image_id]) pairs[card.image_id] = [];
+            pairs[card.image_id].push(card);
+        });
+
+        for (const pair of Object.values(pairs)) {
+            const [card1, card2] = pair as Card[];
+            game.handleClick(card1);
+            game.handleClick(card2);
+            await nextTick();
+        }
+    }
 });

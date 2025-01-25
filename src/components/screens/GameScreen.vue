@@ -7,8 +7,17 @@
       <h2 class="text-lg font-semibold">
         Nickname: {{ config.nickname }}
       </h2>
-      <div v-if="config.gameMode === GameMode.TIMER" class="text-xl font-medium mt-2">
+      <div
+        v-if="config.gameMode === GameMode.TIMER"
+        class="text-xl font-medium mt-2"
+      >
         Time Remaining: {{ timeRemaining }}s
+      </div>
+      <div
+        v-if="config.gameMode === GameMode.MAX_FLIPS"
+        class="text-xl font-medium mt-2"
+      >
+        Flips Remaining: {{ flipsRemaining }}
       </div>
     </div>
     <div class="flex justify-center">
@@ -25,6 +34,7 @@
           v-for="card in cards"
           :key="card.id"
           class="flex justify-center items-center rounded-lg border-2"
+          :disabled="card.is_flipped || card.is_matched"
           :style="{
             width: cardSize + 'px',
             height: cardSize + 'px'
@@ -49,7 +59,15 @@ import {useGameLogic} from '@/composable/useGameLogic.ts';
 import {ref, onMounted, onBeforeUnmount} from 'vue';
 import {DefaultGameModeValues, GameMode} from "@/store/game.ts";
 
-const {level, cards, handleClick, config, timeRemaining} = useGameLogic(DefaultGameModeValues.BASE_TIME);
+const {
+  level,
+  cards,
+  config,
+  handleClick,
+  timeRemaining,
+  flipsRemaining,
+  startTimer,
+} = useGameLogic(DefaultGameModeValues.BASE_TIME, DefaultGameModeValues.BASE_MAX_FLIPS);
 
 const cardSize = ref(100);
 
@@ -64,6 +82,9 @@ const updateCardSize = () => {
 onMounted(() => {
   updateCardSize();
   window.addEventListener('resize', updateCardSize);
+  if (config.gameMode === GameMode.TIMER) {
+    startTimer();
+  }
 });
 
 onBeforeUnmount(() => {
