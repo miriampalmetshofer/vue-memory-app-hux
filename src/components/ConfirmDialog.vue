@@ -27,7 +27,6 @@ const {
   action,
   cancel,
 } = props.confirmDialogData;
-
 </script>
 
 <template>
