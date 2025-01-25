@@ -1,74 +1,49 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { mount } from '@vue/test-utils';
-import { vi } from 'vitest';
-import { useTimer } from '@/composable/useTimer';
+import { vi, expect, it, describe, beforeEach, Mock} from 'vitest';
+import {useTimer} from '@/composable/useTimer';
 
-vi.useFakeTimers()
-
-describe("useTimer", () => {
-    const baseTime = 10;
-    const gameOver = vi.fn();
+describe('useTimer', () => {
+    let gameOverMock: Mock<() => void>;
+    let timerHook: ReturnType<typeof useTimer>;
+    const baseTime = 4;
 
     beforeEach(() => {
-        vi.clearAllTimers();
-        vi.clearAllMocks();
+        vi.useFakeTimers();
+        gameOverMock = vi.fn();
+        timerHook = useTimer(baseTime, gameOverMock);
     });
 
-    it("should initialize with the correct time", () => {
-        const wrapper = mount({
-            setup() {
-                return useTimer(baseTime, gameOver);
-            },
-            template: "<div>{{ timeRemaining }}</div>",
-        });
-
-        expect(wrapper.text()).toBe(`${baseTime}`);
+    it('should initialize with the correct time remaining', () => {
+        expect(timerHook.timeRemaining.value).toBe(baseTime);
     });
 
-    it("should countdown every second", async () => {
-        const wrapper = mount({
-            setup() {
-                return useTimer(baseTime, gameOver);
-            },
-            template: "<div>{{ timeRemaining }}</div>",
-        });
+    it('should decrement time remaining every second', async () => {
+        timerHook.startTimer();
 
         vi.advanceTimersByTime(3000);
-        await wrapper.vm.$nextTick();
 
-        expect(wrapper.text()).toBe(`${baseTime - 3}`);
+        expect(timerHook.timeRemaining.value).toBe(baseTime - 3);
     });
 
-    it("should call onTimeUp when time reaches zero", async () => {
-        const wrapper = mount({
-            setup() {
-                return useTimer(baseTime, gameOver);
-            },
-            template: "<div>{{ timeRemaining }}</div>",
-        });
+    it('should pause the timer correctly', async () => {
+        timerHook.startTimer();
+        vi.advanceTimersByTime(3000);
 
-        vi.advanceTimersByTime(baseTime * 1000);
-        await wrapper.vm.$nextTick();
+        timerHook.pauseTimer();
 
-        expect(wrapper.text()).toBe('0');
+        const timeAfterPause = timerHook.timeRemaining.value;
+        vi.advanceTimersByTime(3000);
+
+        expect(timerHook.timeRemaining.value).toBe(timeAfterPause);
     });
 
-    it("should stop the timer when unmounted", async () => {
-        const wrapper = mount({
-            setup() {
-                return useTimer(baseTime, gameOver);
-            },
-            template: "<div>{{ timeRemaining }}</div>",
-        });
+    it('should reset and restart the timer with new time when setRemainingTime is called', async () => {
+        timerHook.startTimer();
+        vi.advanceTimersByTime(5000);
+
+        timerHook.setRemainingTime(20);
+        expect(timerHook.timeRemaining.value).toBe(20);
 
         vi.advanceTimersByTime(5000);
-        await wrapper.vm.$nextTick();
-
-        wrapper.unmount();
-
-        vi.advanceTimersByTime(5000);
-        await wrapper.vm.$nextTick();
-
-        expect(wrapper.text()).toBe(`${baseTime - 5}`);
+        expect(timerHook.timeRemaining.value).toBe(15);
     });
 });
