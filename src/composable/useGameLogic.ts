@@ -10,7 +10,7 @@ export function useGameLogic(baseTime: number): GameLogic {
     const cards = ref<Card[]>([]);
     const flippedCards = ref<Card[]>([]);
 
-    const {timeRemaining, resetTimer, resumeTimer} = useTimer(baseTime, gameOver);
+    const {timeRemaining, resetTimer, pauseTimer, resumeTimer} = useTimer(baseTime, gameOver);
 
     const config = reactive<GameData>({
         nickname: 'Player1',
@@ -122,6 +122,8 @@ export function useGameLogic(baseTime: number): GameLogic {
         handleClick,
         config,
         timeRemaining,
+        pauseTimer,
+        resumeTimer,
         resetTimer
     };
 }
