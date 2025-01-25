@@ -34,8 +34,8 @@ const {
   <AlertDialog :default-open="defaultOpen">
     <AlertDialogTrigger>
       <Button
-          variant="outline"
-          @click="triggerAction"
+        variant="outline"
+        @click="triggerAction"
       >
         {{ triggerText }}
       </Button>
