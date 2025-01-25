@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGameStore } from '../../store/game';
+import { useGameStore } from '@/store/game';
 
 const gameStore = useGameStore();
 
@@ -12,7 +12,6 @@ const gameStore = useGameStore();
       <p>Player: {{ gameStore.nickname }}</p>
     </div>
   </div>
-
 </template>
 
 <style scoped></style>

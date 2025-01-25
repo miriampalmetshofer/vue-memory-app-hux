@@ -12,13 +12,9 @@ export default defineConfig({
     },
   },
   plugins: [vue()],
-  test: {
-    environment: 'jsdom',
-  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-
 })

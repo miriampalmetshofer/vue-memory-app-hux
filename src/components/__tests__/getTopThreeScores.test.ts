@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getTopThreeScores } from '../../utils/getTopThreeScores';
+import { getTopThreeScores } from '@/utils/getTopThreeScores.ts';
 
 describe('getTopThreeScores', () => {
   it('returns the top three scores sorted by level in descending order', () => {
@@ -38,7 +38,9 @@ describe('getTopThreeScores', () => {
   });
 
   it('returns an empty array if the input is null or undefined', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect(getTopThreeScores(null as any)).toEqual([]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect(getTopThreeScores(undefined as any)).toEqual([]);
   });
 });

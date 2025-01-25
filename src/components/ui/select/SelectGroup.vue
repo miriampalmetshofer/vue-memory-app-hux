@@ -6,6 +6,7 @@ import { computed, type HTMLAttributes } from 'vue'
 const props = defineProps<SelectGroupProps & { class?: HTMLAttributes['class'] }>()
 
 const delegatedProps = computed(() => {
+  // eslint-disable-next-line  @typescript-eslint/no-unused-vars
   const { class: _, ...delegated } = props
 
   return delegated
@@ -13,7 +14,10 @@ const delegatedProps = computed(() => {
 </script>
 
 <template>
-  <SelectGroup :class="cn('p-1 w-full', props.class)" v-bind="delegatedProps">
+  <SelectGroup
+    :class="cn('p-1 w-full', props.class)"
+    v-bind="delegatedProps"
+  >
     <slot />
   </SelectGroup>
 </template>
