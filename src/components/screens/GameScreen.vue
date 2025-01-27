@@ -3,6 +3,7 @@ import {router} from '@/routing/router';
 import {useGameLogic} from '@/composable/useGameLogic.ts';
 import {ref, onMounted, onBeforeUnmount} from 'vue';
 import {DefaultGameModeValues, GameMode} from "@/store/game.ts";
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
 
 const {
   level,
