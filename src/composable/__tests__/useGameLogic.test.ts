@@ -101,12 +101,17 @@ describe('useGameLogic', () => {
         expect(game.cards.value.every((c) => !c.is_flipped)).toBe(true);
     });
 
+    it('level is complete when all cards are matched', async () => {
+        await completeLevel(game);
+        expect(game.isLevelComplete.value).toBe(true);
+    });
+
     it('increases flips when advancing to the next level in MAX_FLIPS mode', async () => {
         game.gameStore.gameMode = GameMode.MAX_FLIPS;
         game.level.value = 1;
 
         const initialFlips = game.flipsRemaining.value;
-        await completeLevel(game);
+        game.advanceToNextLevel();
 
         expect(game.flipsRemaining.value).toBe(initialFlips + 5);
     });
@@ -116,7 +121,7 @@ describe('useGameLogic', () => {
         game.level.value = 1;
 
         const initialTime = game.timeRemaining.value;
-        await completeLevel(game);
+        game.advanceToNextLevel();
 
         expect(game.level.value).toBe(2);
         expect(game.timeRemaining.value).toBe(initialTime + 5);

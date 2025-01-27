@@ -4,6 +4,7 @@ import {useGameLogic} from '@/composable/useGameLogic.ts';
 import {ref, onMounted, onBeforeUnmount} from 'vue';
 import {DefaultGameModeValues, GameMode} from "@/store/game.ts";
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import LevelCompleteDialog from "@/components/LevelCompleteDialog.vue";
 
 const {
   level,
@@ -14,7 +15,9 @@ const {
   flipsRemaining,
   startTimer,
   pauseTimer,
-  resumeTimer
+  resumeTimer,
+  advanceToNextLevel,
+  isLevelComplete,
 } = useGameLogic(DefaultGameModeValues.BASE_TIME, DefaultGameModeValues.BASE_MAX_FLIPS);
 
 const cardSize = ref(100);
@@ -110,6 +113,11 @@ onBeforeUnmount(() => {
       </div>
     </div>
   </div>
+  <LevelCompleteDialog
+    :level="level"
+    :advance-to-next-level="advanceToNextLevel"
+    :is-level-complete="isLevelComplete"
+  />
 </template>
 
 

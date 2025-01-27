@@ -13,4 +13,6 @@ export type GameLogic = {
     resumeTimer: () => void;
     handleClick: (card: Card) => void;
     startTimer: () => void;
+    isLevelComplete: Ref<boolean>;
+    advanceToNextLevel: () => void;
 }

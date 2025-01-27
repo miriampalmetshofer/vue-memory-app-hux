@@ -9,6 +9,7 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
     const level = ref<number>(1);
     const cards = ref<Card[]>([]);
     const flippedCards = ref<Card[]>([]);
+    const isLevelComplete = ref<boolean>(false);
 
     const {timeRemaining, setRemainingTime, startTimer, pauseTimer, resumeTimer} = useTimer(baseTime, gameOver);
     const {flipsRemaining, reduceFlipsAndCheckGameOver} = useMaxFlips(baseFlips, gameOver);
@@ -77,12 +78,14 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
         } else {
             increaseFlips();
         }
+        isLevelComplete.value = false;
     };
 
     const checkLevelIncrease = () => {
         const allMatched = cards.value.every((card: Card) => card.is_matched);
         if (allMatched) {
-            advanceToNextLevel();
+            if (gameStore.gameMode === GameMode.TIMER) pauseTimer();
+            isLevelComplete.value = true;
         }
     };
 
@@ -133,5 +136,7 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
         resumeTimer,
         timeRemaining,
         flipsRemaining,
+        isLevelComplete,
+        advanceToNextLevel,
     };
 }
