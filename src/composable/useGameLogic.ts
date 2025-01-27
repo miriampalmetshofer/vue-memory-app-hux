@@ -1,10 +1,9 @@
-import {reactive, ref, watch} from 'vue';
+import {ref, watch} from 'vue';
 import {useTimer} from '@/composable/useTimer';
 import {Card} from "@/types/Card.ts";
 import {GameLogic} from "@/types/GameLogic.ts";
-import {GameMode} from "@/store/game.ts";
+import {GameMode, useGameStore} from "@/store/game.ts";
 import {useMaxFlips} from "@/composable/useMaxFlips.ts";
-import {GameData} from "@/types/GameData.ts";
 
 export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
     const level = ref<number>(1);
@@ -14,11 +13,7 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
     const {timeRemaining, setRemainingTime, startTimer} = useTimer(baseTime, gameOver);
     const {flipsRemaining, reduceFlipsAndCheckGameOver} = useMaxFlips(baseFlips, gameOver);
 
-    const config = reactive<GameData>({
-        nickname: 'Player1',
-        gameMode: GameMode.TIMER,
-        level: 1,
-    });
+    const gameStore = useGameStore();
 
     const generateCards = (): void => {
         const numCards = level.value * 2 + 2;
@@ -47,7 +42,7 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
                 handleMatched(card, flippedCards.value[0]);
                 checkLevelIncrease();
             } else {
-                if (config.gameMode === GameMode.MAX_FLIPS) {
+                if (gameStore.gameMode === GameMode.MAX_FLIPS) {
                     reduceFlipsAndCheckGameOver();
                 }
                 handleMismatch();
@@ -77,7 +72,7 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
 
     const advanceToNextLevel = () => {
         level.value += 1;
-        if (config.gameMode === GameMode.TIMER) {
+        if (gameStore.gameMode === GameMode.TIMER) {
             increaseTimer();
         } else {
             increaseFlips();
@@ -130,7 +125,7 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
     return {
         level,
         cards,
-        config,
+        gameStore,
         flippedCards,
         handleClick,
         startTimer,

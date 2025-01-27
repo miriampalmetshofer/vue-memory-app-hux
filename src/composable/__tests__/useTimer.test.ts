@@ -1,5 +1,6 @@
 import { vi, expect, it, describe, beforeEach, Mock} from 'vitest';
 import {useTimer} from '@/composable/useTimer';
+import {createPinia, setActivePinia} from "pinia";
 
 describe('useTimer', () => {
     let gameOverMock: Mock<() => void>;
@@ -7,6 +8,8 @@ describe('useTimer', () => {
     const baseTime = 4;
 
     beforeEach(() => {
+        const pinia = createPinia();
+        setActivePinia(pinia);
         vi.useFakeTimers();
         gameOverMock = vi.fn();
         timerHook = useTimer(baseTime, gameOverMock);

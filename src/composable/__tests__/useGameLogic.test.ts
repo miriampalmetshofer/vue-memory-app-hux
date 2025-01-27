@@ -1,9 +1,10 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { nextTick } from 'vue';
-import { useGameLogic } from '@/composable/useGameLogic';
-import { Card } from "@/types/Card.ts";
-import { GameLogic } from "@/types/GameLogic.ts";
-import { GameMode } from "@/store/game.ts";
+import {describe, it, expect, beforeEach} from 'vitest';
+import {nextTick} from 'vue';
+import {useGameLogic} from '@/composable/useGameLogic';
+import {Card} from "@/types/Card.ts";
+import {GameLogic} from "@/types/GameLogic.ts";
+import {GameMode} from "@/store/game.ts";
+import {createPinia, setActivePinia} from "pinia";
 
 describe('useGameLogic', () => {
     let game: GameLogic;
@@ -11,6 +12,8 @@ describe('useGameLogic', () => {
     const baseFlips = 4;
 
     beforeEach(() => {
+        const pinia = createPinia();
+        setActivePinia(pinia);
         game = useGameLogic(baseTime, baseFlips);
     });
 
@@ -18,7 +21,7 @@ describe('useGameLogic', () => {
         expect(game.level.value).toBe(1);
         expect(game.cards.value).toHaveLength(4);
         expect(game.flippedCards.value).toEqual([]);
-        expect(game.config.nickname).toBe('Player1');
+        expect(game.gameStore.nickname).toBe('');
     });
 
     it('generates the correct number of cards for the current level', async () => {
@@ -99,7 +102,7 @@ describe('useGameLogic', () => {
     });
 
     it('increases flips when advancing to the next level in MAX_FLIPS mode', async () => {
-        game.config.gameMode = GameMode.MAX_FLIPS;
+        game.gameStore.gameMode = GameMode.MAX_FLIPS;
         game.level.value = 1;
 
         const initialFlips = game.flipsRemaining.value;
@@ -109,7 +112,7 @@ describe('useGameLogic', () => {
     });
 
     it('increases timer when advancing to the next level in TIMER mode', async () => {
-        game.config.gameMode = GameMode.TIMER;
+        game.gameStore.gameMode = GameMode.TIMER;
         game.level.value = 1;
 
         const initialTime = game.timeRemaining.value;
