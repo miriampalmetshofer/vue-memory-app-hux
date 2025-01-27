@@ -4,6 +4,7 @@ import {Card} from "@/types/Card.ts";
 import {GameLogic} from "@/types/GameLogic.ts";
 import {GameMode, useGameStore} from "@/store/game.ts";
 import {useMaxFlips} from "@/composable/useMaxFlips.ts";
+import { router } from '@/routing/router';
 
 export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
     const level = ref<number>(1);
@@ -56,8 +57,8 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
         }
     };
 
-    function gameOver() {
-        alert("Game Over!");
+    async function gameOver() {
+        await router.push('/end');
         level.value = 1;
         setRemainingTime(baseTime);
         flipsRemaining.value = baseFlips;
