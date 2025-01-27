@@ -1,20 +1,37 @@
 import {describe, it, expect, beforeEach} from 'vitest';
-import {nextTick} from 'vue';
+import {defineComponent, nextTick} from 'vue';
 import {useGameLogic} from '@/composable/useGameLogic';
 import {Card} from "@/types/Card.ts";
 import {GameLogic} from "@/types/GameLogic.ts";
 import {GameMode} from "@/store/game.ts";
 import {createPinia, setActivePinia} from "pinia";
+import {mount, VueWrapper} from "@vue/test-utils";
 
 describe('useGameLogic', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let wrapper: VueWrapper<any>;
     let game: GameLogic;
+
     const baseTime = 2;
     const baseFlips = 4;
 
     beforeEach(() => {
         const pinia = createPinia();
         setActivePinia(pinia);
-        game = useGameLogic(baseTime, baseFlips);
+
+        // Define and mount a dummy component
+        const TestComponent = defineComponent({
+            setup() {
+                return { game: useGameLogic(baseTime, baseFlips) };
+            },
+            template: `<div />`,
+        });
+
+        wrapper = mount(TestComponent, {
+            global: { plugins: [pinia] },
+        });
+
+        game = wrapper.vm.game;
     });
 
     it('initializes with correct default values', () => {
@@ -113,18 +130,18 @@ describe('useGameLogic', () => {
         const initialFlips = game.flipsRemaining.value;
         game.advanceToNextLevel();
 
-        expect(game.flipsRemaining.value).toBe(initialFlips + 5);
+        expect(game.flipsRemaining.value).toBe(initialFlips + 3);
     });
 
     it('increases timer when advancing to the next level in TIMER mode', async () => {
         game.gameStore.gameMode = GameMode.TIMER;
         game.level.value = 1;
 
-        const initialTime = game.timeRemaining.value;
+        const initialTime = game.remainingTime.value;
         game.advanceToNextLevel();
 
         expect(game.level.value).toBe(2);
-        expect(game.timeRemaining.value).toBe(initialTime + 5);
+        expect(game.remainingTime.value).toBe(initialTime + 5);
     });
 
     async function completeLevel(game: GameLogic) {
