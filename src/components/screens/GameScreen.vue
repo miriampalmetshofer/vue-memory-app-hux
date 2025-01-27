@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import {router} from '@/routing/router';
 import {useGameLogic} from '@/composable/useGameLogic.ts';
 import {ref, onMounted, onBeforeUnmount} from 'vue';
 import {DefaultGameModeValues, GameMode} from "@/store/game.ts";
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
 
 const {
   level,
@@ -11,6 +13,8 @@ const {
   timeRemaining,
   flipsRemaining,
   startTimer,
+  pauseTimer,
+  resumeTimer
 } = useGameLogic(DefaultGameModeValues.BASE_TIME, DefaultGameModeValues.BASE_MAX_FLIPS);
 
 const cardSize = ref(100);
@@ -21,6 +25,10 @@ const updateCardSize = () => {
   const containerWidth = window.innerWidth * factor;
   cardSize.value = containerWidth / gridSize;
   console.log('cardSize', cardSize.value);
+};
+
+const navToStartScreen = () => {
+  router.push('/');
 };
 
 onMounted(() => {
@@ -38,6 +46,19 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="size-full">
+    <div class="absolute bottom-4 right-4">
+      <ConfirmDialog
+        :confirm-dialog-data="{
+          triggerText: 'Leave Game',
+          triggerAction: pauseTimer,
+          title: 'Giving up already?',
+          description: 'If you leave the game now you will loose your progress. Are you sure you want to leave?',
+          actionText: 'Leave Game',
+          action: navToStartScreen,
+          cancel: resumeTimer,
+        }"
+      />
+    </div>
     <div class="flex flex-col align-middle items-center p-4">
       <h1 class="text-2xl font-semibold">
         Level: {{ level }}

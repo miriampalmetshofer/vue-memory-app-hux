@@ -9,6 +9,8 @@ export type GameLogic = {
     gameStore: GameData;
     timeRemaining: Ref<number>;
     flipsRemaining: Ref<number>;
+    pauseTimer: () => void;
+    resumeTimer: () => void;
     handleClick: (card: Card) => void;
     startTimer: () => void;
 }
