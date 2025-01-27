@@ -1,4 +1,4 @@
-import {ref, onUnmounted, onMounted} from 'vue';
+import {ref} from 'vue';
 
 export function useTimer(baseTime: number, gameOver: () => void) {
     const timeRemaining = ref(baseTime);
@@ -10,7 +10,7 @@ export function useTimer(baseTime: number, gameOver: () => void) {
         }
 
         timerInterval = setInterval(() => {
-            if (timeRemaining.value === 0) {
+            if (timeRemaining.value < 1) {
                 gameOver();
             } else {
                 timeRemaining.value -= 1;
@@ -18,10 +18,7 @@ export function useTimer(baseTime: number, gameOver: () => void) {
         }, 1000);
     };
 
-    const resetTimer = (newTime: number) => {
-        if (timerInterval) {
-            clearInterval(timerInterval);
-        }
+    const setRemainingTime = (newTime: number) => {
         timeRemaining.value = newTime;
         startTimer();
     };
@@ -35,23 +32,20 @@ export function useTimer(baseTime: number, gameOver: () => void) {
 
     const resumeTimer = () => {
         if (!timerInterval && timeRemaining.value > 0) {
-            startTimer();
+            timerInterval = setInterval(() => {
+                if (timeRemaining.value < 1) {
+                    gameOver();
+                } else {
+                    timeRemaining.value -= 1;
+                }
+            }, 1000);
         }
     };
 
-    onUnmounted(() => {
-        if (timerInterval) {
-            clearInterval(timerInterval);
-        }
-    });
-
-    onMounted(() => {
-        startTimer();
-    });
-
     return {
         timeRemaining,
-        resetTimer,
+        startTimer,
+        setRemainingTime,
         pauseTimer,
         resumeTimer,
     };
