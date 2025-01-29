@@ -1,8 +1,8 @@
-import {ref, watch} from 'vue';
+import {onUnmounted, ref, watch} from 'vue';
 import {useTimer} from '@/composable/useTimer';
 import {Card} from "@/types/Card.ts";
 import {GameLogic} from "@/types/GameLogic.ts";
-import {GameMode, useGameStore} from "@/store/game.ts";
+import {DefaultGameModeValues, GameMode, useGameStore} from "@/store/game.ts";
 import {useMaxFlips} from "@/composable/useMaxFlips.ts";
 import { router } from '@/routing/router';
 
@@ -126,6 +126,15 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
         });
     };
 
+    onUnmounted(() => {
+        level.value = 1;
+        resetTimer();
+        flipsRemaining.value = DefaultGameModeValues.BASE_MAX_FLIPS;
+        flippedCards.value = [];
+        cards.value = [];
+        isLevelComplete.value = false;
+    });
+
     return {
         level,
         cards,
@@ -135,7 +144,6 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
         startTimer,
         pauseTimer,
         resumeTimer,
-        resetTimer,
         timeRemaining,
         flipsRemaining,
         isLevelComplete,
