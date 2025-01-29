@@ -11,6 +11,7 @@ export type GameLogic = {
     flipsRemaining: Ref<number>;
     pauseTimer: () => void;
     resumeTimer: () => void;
+    resetTimer: () => void;
     handleClick: (card: Card) => void;
     startTimer: () => void;
     isLevelComplete: Ref<boolean>;

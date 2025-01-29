@@ -42,11 +42,20 @@ export function useTimer(baseTime: number, gameOver: () => void) {
         }
     };
 
+    const resetTimer = () => {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        timeRemaining.value = baseTime;
+    };
+
     return {
         timeRemaining,
         startTimer,
         setRemainingTime,
         pauseTimer,
         resumeTimer,
+        resetTimer,
     };
 }
