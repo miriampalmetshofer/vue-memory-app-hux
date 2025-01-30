@@ -124,7 +124,6 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
     };
 
     onUnmounted(() => {
-        console.log('GameLogic unmounted');
         level.value = 1;
         resetTimer();
         flipsRemaining.value = DefaultGameModeValues.BASE_MAX_FLIPS;
