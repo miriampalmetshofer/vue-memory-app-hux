@@ -59,9 +59,6 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
 
     async function gameOver() {
         await router.push('/end');
-        level.value = 1;
-        setRemainingTime(baseTime);
-        flipsRemaining.value = baseFlips;
     }
 
     function increaseTimer() {
@@ -127,6 +124,7 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
     };
 
     onUnmounted(() => {
+        console.log('GameLogic unmounted');
         level.value = 1;
         resetTimer();
         flipsRemaining.value = DefaultGameModeValues.BASE_MAX_FLIPS;
