@@ -14,3 +14,6 @@ This is a simple single player memory game built with Vue. The project was done 
 Run `npm install` to install all dependencies
 
 Run `npm run dev` to start the development server
+
+## Live Application
+https://vue-memory-app-hux.vercel.app/
