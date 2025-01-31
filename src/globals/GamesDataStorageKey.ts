@@ -1,0 +1,1 @@
+export const GAMES_DATA_STORAGE_KEY = "vue-memory-app-hux";
