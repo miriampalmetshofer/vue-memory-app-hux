@@ -1,19 +1,21 @@
-import { ref, watch } from 'vue';
+import { onUnmounted, ref, watch } from 'vue';
 import { useTimer } from '@/composable/useTimer';
 import { Card } from "@/types/Card.ts";
 import { GameLogic } from "@/types/GameLogic.ts";
-import { GameMode, useGameStore } from "@/store/game.ts";
+import { DefaultGameModeValues, GameMode, useGameStore } from "@/store/game.ts";
 import { useMaxFlips } from "@/composable/useMaxFlips.ts";
 import {fetchImages} from "@/utils/APIClient.ts";
+import { router } from '@/routing/router';
 
 export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
     const level = ref<number>(1);
     const cards = ref<Card[]>([]);
     const flippedCards = ref<Card[]>([]);
     const cachedImages = ref<string[]>([]);
+    const isLevelComplete = ref<boolean>(false);
 
-    const { timeRemaining, setRemainingTime, startTimer, pauseTimer, resumeTimer } = useTimer(baseTime, gameOver);
-    const { flipsRemaining, reduceFlipsAndCheckGameOver } = useMaxFlips(baseFlips, gameOver);
+    const {remainingTime, setRemainingTime, startTimer, pauseTimer, resumeTimer, resetTimer} = useTimer(baseTime, gameOver);
+    const {flipsRemaining, reduceFlipsAndCheckGameOver} = useMaxFlips(baseFlips, gameOver);
 
     const gameStore = useGameStore();
 
@@ -63,11 +65,8 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
         }
     };
 
-    function gameOver() {
-        alert("Game Over!");
-        level.value = 1;
-        setRemainingTime(baseTime);
-        flipsRemaining.value = baseFlips;
+    async function gameOver() {
+        await router.push('/end');
     }
 
     function increaseTimer() {
@@ -75,7 +74,7 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
     }
 
     const increaseFlips = () => {
-        flipsRemaining.value = baseFlips + (level.value - 1) * 5;
+        flipsRemaining.value = baseFlips + (level.value - 1) * 3;
     };
 
     const advanceToNextLevel = () => {
@@ -85,12 +84,14 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
         } else {
             increaseFlips();
         }
+        isLevelComplete.value = false;
     };
 
     const checkLevelIncrease = () => {
         const allMatched = cards.value.every((card: Card) => card.is_matched);
         if (allMatched) {
-            advanceToNextLevel();
+            if (gameStore.gameMode === GameMode.TIMER) pauseTimer();
+            isLevelComplete.value = true;
         }
     };
 
@@ -130,6 +131,15 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
         });
     };
 
+    onUnmounted(() => {
+        level.value = 1;
+        resetTimer();
+        flipsRemaining.value = DefaultGameModeValues.BASE_MAX_FLIPS;
+        flippedCards.value = [];
+        cards.value = [];
+        isLevelComplete.value = false;
+    });
+
     return {
         level,
         cards,
@@ -139,7 +149,9 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
         startTimer,
         pauseTimer,
         resumeTimer,
-        timeRemaining,
+        remainingTime,
         flipsRemaining,
+        isLevelComplete,
+        advanceToNextLevel,
     };
 }

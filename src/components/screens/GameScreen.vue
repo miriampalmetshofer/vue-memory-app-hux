@@ -4,17 +4,21 @@ import {useGameLogic} from '@/composable/useGameLogic.ts';
 import {ref, onMounted, onBeforeUnmount, watch} from 'vue';
 import {DefaultGameModeValues, GameMode} from "@/store/game.ts";
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import LevelCompleteDialog from "@/components/LevelCompleteDialog.vue";
+import GameScreenHeader from "@/components/GameScreenHeader.vue";
 
 const {
   level,
   cards,
   gameStore,
   handleClick,
-  timeRemaining,
+  remainingTime,
   flipsRemaining,
   startTimer,
   pauseTimer,
-  resumeTimer
+  resumeTimer,
+  advanceToNextLevel,
+  isLevelComplete,
 } = useGameLogic(DefaultGameModeValues.BASE_TIME, DefaultGameModeValues.BASE_MAX_FLIPS);
 
 const cardSize = ref(100);
@@ -59,26 +63,13 @@ onBeforeUnmount(() => {
         }"
       />
     </div>
-    <div class="flex flex-col align-middle items-center p-4">
-      <h1 class="text-2xl font-semibold">
-        Level: {{ level }}
-      </h1>
-      <h2 class="text-lg font-semibold">
-        Nickname: {{ gameStore.nickname }}
-      </h2>
-      <div
-        v-if="gameStore.gameMode === GameMode.TIMER"
-        class="text-xl font-medium mt-2"
-      >
-        Time Remaining: {{ timeRemaining }}s
-      </div>
-      <div
-        v-if="gameStore.gameMode === GameMode.MAX_FLIPS"
-        class="text-xl font-medium mt-2"
-      >
-        Flips Remaining: {{ flipsRemaining }}
-      </div>
-    </div>
+    <GameScreenHeader
+      :level="level"
+      :nickname="gameStore.nickname"
+      :game-mode="gameStore.gameMode"
+      :remaining-time="remainingTime"
+      :flips-remaining="flipsRemaining"
+    />
     <div class="flex justify-center">
       <div
         class="grid"
@@ -110,6 +101,11 @@ onBeforeUnmount(() => {
       </div>
     </div>
   </div>
+  <LevelCompleteDialog
+    :level="level"
+    :advance-to-next-level="advanceToNextLevel"
+    :is-level-complete="isLevelComplete"
+  />
 </template>
 
 

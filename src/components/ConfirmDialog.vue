@@ -19,19 +19,21 @@ const props = defineProps<{
 
 const {
   defaultOpen,
+  showTrigger = true,
   title,
   description,
   triggerText,
   triggerAction,
   actionText = 'Continue',
   action,
+  cancelText = 'Cancel',
   cancel,
 } = props.confirmDialogData;
 </script>
 
 <template>
   <AlertDialog :default-open="defaultOpen">
-    <AlertDialogTrigger>
+    <AlertDialogTrigger v-if="showTrigger">
       <Button
         variant="outline"
         @click="triggerAction"
@@ -47,7 +49,7 @@ const {
       </AlertDialogHeader>
       <AlertDialogFooter>
         <AlertDialogCancel @click="cancel">
-          Cancel
+          {{ cancelText }}
         </AlertDialogCancel>
         <AlertDialogAction @click="action">
           {{ actionText }}

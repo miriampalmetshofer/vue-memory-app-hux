@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cn } from '@/lib/utils'
+import {cn} from '@/lib/utils'
 import {
   AlertDialogContent,
   type AlertDialogContentEmits,
@@ -8,14 +8,14 @@ import {
   AlertDialogPortal,
   useForwardPropsEmits,
 } from 'radix-vue'
-import { computed, type HTMLAttributes } from 'vue'
+import {computed, type HTMLAttributes} from 'vue'
 
 const props = defineProps<AlertDialogContentProps & { class?: HTMLAttributes['class'] }>()
 const emits = defineEmits<AlertDialogContentEmits>()
 
 const delegatedProps = computed(() => {
   // eslint-disable-next-line  @typescript-eslint/no-unused-vars
-  const { class: _, ...delegated } = props
+  const {class: _, ...delegated} = props
 
   return delegated
 })
@@ -24,7 +24,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
 </script>
 
 <template>
-  <AlertDialogPortal>
+  <AlertDialogPortal :disabled="true">
     <AlertDialogOverlay
       class="fixed inset-0 z-50 bg-black/80  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
     />

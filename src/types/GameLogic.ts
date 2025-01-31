@@ -7,10 +7,12 @@ export type GameLogic = {
     cards: Ref<Card[]>;
     flippedCards: Ref<Card[]>;
     gameStore: GameData;
-    timeRemaining: Ref<number>;
+    remainingTime: Ref<number>;
     flipsRemaining: Ref<number>;
     pauseTimer: () => void;
     resumeTimer: () => void;
     handleClick: (card: Card) => void;
     startTimer: () => void;
+    isLevelComplete: Ref<boolean>;
+    advanceToNextLevel: () => void;
 }

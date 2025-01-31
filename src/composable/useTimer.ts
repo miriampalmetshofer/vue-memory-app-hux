@@ -1,7 +1,7 @@
 import {ref} from 'vue';
 
 export function useTimer(baseTime: number, gameOver: () => void) {
-    const timeRemaining = ref(baseTime);
+    const remainingTime = ref(baseTime);
     let timerInterval: ReturnType<typeof setInterval> | null = null;
 
     const startTimer = () => {
@@ -10,16 +10,16 @@ export function useTimer(baseTime: number, gameOver: () => void) {
         }
 
         timerInterval = setInterval(() => {
-            if (timeRemaining.value < 1) {
+            if (remainingTime.value < 1) {
                 gameOver();
             } else {
-                timeRemaining.value -= 1;
+                remainingTime.value -= 1;
             }
         }, 1000);
     };
 
     const setRemainingTime = (newTime: number) => {
-        timeRemaining.value = newTime;
+        remainingTime.value = newTime;
         startTimer();
     };
 
@@ -31,22 +31,31 @@ export function useTimer(baseTime: number, gameOver: () => void) {
     };
 
     const resumeTimer = () => {
-        if (!timerInterval && timeRemaining.value > 0) {
+        if (!timerInterval && remainingTime.value > 0) {
             timerInterval = setInterval(() => {
-                if (timeRemaining.value < 1) {
+                if (remainingTime.value < 1) {
                     gameOver();
                 } else {
-                    timeRemaining.value -= 1;
+                    remainingTime.value -= 1;
                 }
             }, 1000);
         }
     };
 
+    const resetTimer = () => {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        remainingTime.value = baseTime;
+    };
+
     return {
-        timeRemaining,
+        remainingTime,
         startTimer,
         setRemainingTime,
         pauseTimer,
         resumeTimer,
+        resetTimer,
     };
 }

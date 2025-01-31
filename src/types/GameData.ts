@@ -1,5 +1,7 @@
+import {GameMode} from "@/store/game.ts";
+
 export type GameData = {
   nickname: string;
-  gameMode: string;
+  gameMode: GameMode;
   level: number;
 };
