@@ -6,6 +6,8 @@ import { DefaultGameModeValues, GameMode, useGameStore } from "@/store/game.ts";
 import { useMaxFlips } from "@/composable/useMaxFlips.ts";
 import {fetchImages} from "@/utils/APIClient.ts";
 import { router } from '@/routing/router';
+import { GAMES_DATA_STORAGE_KEY } from '@/globals/GamesDataStorageKey.ts';
+import { GameData } from '@/types/GameData';
 
 export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
     const level = ref<number>(1);
@@ -65,7 +67,21 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
         }
     };
 
+    function saveGameToStorage() {
+      const storedGames: GameData[] = JSON.parse(
+        localStorage.getItem(GAMES_DATA_STORAGE_KEY) || "[]",
+      );
+      const game: GameData = {
+        nickname: gameStore.nickname,
+        gameMode: gameStore.gameMode,
+        level: gameStore.level + 1,
+      };
+      storedGames.push(game);
+      localStorage.setItem(GAMES_DATA_STORAGE_KEY, JSON.stringify(storedGames));
+    }
+
     async function gameOver() {
+        saveGameToStorage();
         await router.push('/end');
     }
 
