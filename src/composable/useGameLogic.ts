@@ -12,7 +12,7 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
     const flippedCards = ref<Card[]>([]);
     const isLevelComplete = ref<boolean>(false);
 
-    const {timeRemaining, setRemainingTime, startTimer, pauseTimer, resumeTimer, resetTimer} = useTimer(baseTime, gameOver);
+    const {remainingTime, setRemainingTime, startTimer, pauseTimer, resumeTimer, resetTimer} = useTimer(baseTime, gameOver);
     const {flipsRemaining, reduceFlipsAndCheckGameOver} = useMaxFlips(baseFlips, gameOver);
 
     const gameStore = useGameStore();
@@ -66,7 +66,7 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
     }
 
     const increaseFlips = () => {
-        flipsRemaining.value = baseFlips + (level.value - 1) * 5;
+        flipsRemaining.value = baseFlips + (level.value - 1) * 3;
     };
 
     const advanceToNextLevel = () => {
@@ -141,7 +141,7 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
         startTimer,
         pauseTimer,
         resumeTimer,
-        timeRemaining,
+        remainingTime,
         flipsRemaining,
         isLevelComplete,
         advanceToNextLevel,

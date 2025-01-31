@@ -1,20 +1,22 @@
-import { describe, it, expect } from 'vitest';
-import { getTopThreeScores } from '@/utils/getTopThreeScores.ts';
+import {describe, expect, it} from 'vitest';
+import {getTopThreeScores} from '@/utils/getTopThreeScores.ts';
+import {GameMode} from "@/store/game.ts";
+import {GameData} from "@/types/GameData.ts";
 
 describe('getTopThreeScores', () => {
   it('returns the top three scores sorted by level in descending order', () => {
-    const games = [
-      { nickname: 'John', gameMode: 'Flip Mode', level: 1 },
-      { nickname: 'Jane', gameMode: 'Time Mode', level: 2 },
-      { nickname: 'Jack', gameMode: 'Time Mode', level: 3 },
+    const games: GameData[] = [
+      { nickname: 'John', gameMode: GameMode.MAX_FLIPS, level: 1 },
+      { nickname: 'Jane', gameMode: GameMode.TIMER, level: 2 },
+      { nickname: 'Jack', gameMode: GameMode.TIMER, level: 3 },
     ];
 
     const result = getTopThreeScores(games);
 
     expect(result).toEqual([
-      { nickname: 'Jack', gameMode: 'Time Mode', level: 3 },
-      { nickname: 'Jane', gameMode: 'Time Mode', level: 2 },
-      { nickname: 'John', gameMode: 'Flip Mode', level: 1 },
+      { nickname: 'Jack', gameMode: 'timer', level: 3 },
+      { nickname: 'Jane', gameMode: 'timer', level: 2 },
+      { nickname: 'John', gameMode: 'maxFlips', level: 1 },
     ]);
   });
 
@@ -24,16 +26,16 @@ describe('getTopThreeScores', () => {
   });
 
   it('handles an input with fewer than three games', () => {
-    const games = [
-      { nickname: 'John', gameMode: 'Flip Mode', level: 1 },
-      { nickname: 'Jane', gameMode: 'Time Mode', level: 2 },
-    ];
+    const games: GameData[] = [
+        { nickname: 'John', gameMode: GameMode.MAX_FLIPS, level: 1 },
+        { nickname: 'Jane', gameMode: GameMode.TIMER, level: 2
+    }];
 
     const result = getTopThreeScores(games);
 
     expect(result).toEqual([
-      { nickname: 'Jane', gameMode: 'Time Mode', level: 2 },
-      { nickname: 'John', gameMode: 'Flip Mode', level: 1 },
+      { nickname: 'Jane', gameMode: 'timer', level: 2 },
+      { nickname: 'John', gameMode: 'maxFlips', level: 1 },
     ]);
   });
 
