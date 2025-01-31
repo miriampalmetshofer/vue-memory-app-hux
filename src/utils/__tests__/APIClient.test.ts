@@ -34,7 +34,7 @@ describe('fetchImages', () => {
 
         const images = await fetchImages(3);
 
-        expect(axios.get).toHaveBeenCalledWith('https://api.thecatapi.com/v1/images/search');
+        expect(axios.get).toHaveBeenCalledWith('https://api.thecatapi.com/v1/images/search?limit=10');
         expect(images).toEqual([
             'https://example.com/image1.jpg',
             'https://example.com/image2.jpg',

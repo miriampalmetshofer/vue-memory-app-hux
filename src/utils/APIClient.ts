@@ -8,7 +8,7 @@ export const fetchImages = async (numImages: number): Promise<string[]> => {
         return storedImages.slice(0, numImages);
     }
 
-    const response = await axios.get(`https://api.thecatapi.com/v1/images/search`);
+    const response = await axios.get(`https://api.thecatapi.com/v1/images/search?limit=10`);
     const newImages = response.data.map((img: APICatImage) => img.url);
     console.log(newImages);
 
