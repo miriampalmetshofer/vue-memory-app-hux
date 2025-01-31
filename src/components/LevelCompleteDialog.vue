@@ -2,6 +2,7 @@
 import {router} from "@/routing/router.ts";
 import {ref} from 'vue';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import { saveGameToStorage } from "@/composable/saveGameToStorage";
 
 const {advanceToNextLevel, isLevelComplete, level} = defineProps<{
   level: number;
@@ -17,6 +18,7 @@ const handleNextLevel = () => {
 };
 
 const navToStartScreen = () => {
+  saveGameToStorage();
   router.push('/');
 };
 </script>

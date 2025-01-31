@@ -6,6 +6,7 @@ import { DefaultGameModeValues, GameMode, useGameStore } from "@/store/game.ts";
 import { useMaxFlips } from "@/composable/useMaxFlips.ts";
 import {fetchImages} from "@/utils/APIClient.ts";
 import { router } from '@/routing/router';
+import { saveGameToStorage } from './saveGameToStorage';
 
 export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
     const level = ref<number>(1);
@@ -66,6 +67,7 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
     };
 
     async function gameOver() {
+        saveGameToStorage();
         await router.push('/end');
     }
 
@@ -79,6 +81,7 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
 
     const advanceToNextLevel = () => {
         level.value += 1;
+        gameStore.updateLevel(level.value)
         if (gameStore.gameMode === GameMode.TIMER) {
             increaseTimer();
         } else {
