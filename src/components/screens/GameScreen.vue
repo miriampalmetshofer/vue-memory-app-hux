@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {router} from '@/routing/router';
 import {useGameLogic} from '@/composable/useGameLogic.ts';
-import {ref, onMounted, onBeforeUnmount} from 'vue';
+import {ref, onMounted, onBeforeUnmount, watch} from 'vue';
 import {DefaultGameModeValues, GameMode} from "@/store/game.ts";
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import LevelCompleteDialog from "@/components/LevelCompleteDialog.vue";
@@ -22,21 +22,21 @@ const {
 } = useGameLogic(DefaultGameModeValues.BASE_TIME, DefaultGameModeValues.BASE_MAX_FLIPS);
 
 const cardSize = ref(100);
+const gridSize = ref(2);
 
 const updateCardSize = () => {
-  const gridSize = Math.ceil(Math.sqrt(cards.value.length));
-  const factor = window.innerWidth > 768 ? 0.2 : 0.8; // more padding on desktop
+  gridSize.value = Math.ceil(Math.sqrt(cards.value.length));
+  const factor = window.innerWidth > 768 ? 0.4 : 0.8;
   const containerWidth = window.innerWidth * factor;
-  cardSize.value = containerWidth / gridSize;
-  console.log('cardSize', cardSize.value);
+  cardSize.value = containerWidth / gridSize.value;
 };
+watch(cards, updateCardSize);
 
 const navToStartScreen = () => {
   router.push('/');
 };
 
 onMounted(() => {
-  updateCardSize();
   window.addEventListener('resize', updateCardSize);
   if (gameStore.gameMode === GameMode.TIMER) {
     startTimer();
@@ -74,8 +74,8 @@ onBeforeUnmount(() => {
       <div
         class="grid"
         :style="{
-          gridTemplateColumns: `repeat(${Math.ceil(Math.sqrt(cards.length))}, minmax(0, 1fr))`,
-          gridTemplateRows: `repeat(${Math.ceil(Math.sqrt(cards.length))}, minmax(0, 1fr))`,
+          gridTemplateColumns: `repeat(${gridSize}, minmax(0, 1fr))`,
+          gridTemplateRows: `repeat(${gridSize}, minmax(0, 1fr))`,
           gap: '0.5rem',
           maxWidth: '100%',
         }"
@@ -93,9 +93,9 @@ onBeforeUnmount(() => {
         >
           <img
             v-if="card.is_flipped || card.is_matched"
-            :src="`/images/card_${card.image_id}.jpg`"
+            :src="card.image_url"
             alt="card"
-            class="size-full rounded-lg"
+            class="size-full rounded-lg object-cover"
           >
         </button>
       </div>

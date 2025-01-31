@@ -1,4 +1,4 @@
-import {describe, it, expect, beforeEach} from 'vitest';
+import {describe, it, expect, beforeEach, vi} from 'vitest';
 import {defineComponent, nextTick} from 'vue';
 import {useGameLogic} from '@/composable/useGameLogic';
 import {Card} from "@/types/Card.ts";
@@ -6,6 +6,14 @@ import {GameLogic} from "@/types/GameLogic.ts";
 import {GameMode} from "@/store/game.ts";
 import {createPinia, setActivePinia} from "pinia";
 import {mount, VueWrapper} from "@vue/test-utils";
+
+vi.mock('@/utils/APIClient.ts', () => ({
+    fetchImages: vi.fn(() => Promise.resolve([
+        new URL('https://example.com/image1.jpg'),
+        new URL('https://example.com/image2.jpg'),
+        new URL('https://example.com/image3.jpg'),
+    ]))
+}));
 
 describe('useGameLogic', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -39,6 +47,11 @@ describe('useGameLogic', () => {
         expect(game.cards.value).toHaveLength(4);
         expect(game.flippedCards.value).toEqual([]);
         expect(game.gameStore.nickname).toBe('');
+    });
+
+    it('fetches the correct number of unique images for the current level', async () => {
+        const uniqueImages = new Set(game.cards.value.map(card => card.image_url));
+        expect(uniqueImages.size).toBe(2);
     });
 
     it('generates the correct number of cards for the current level', async () => {

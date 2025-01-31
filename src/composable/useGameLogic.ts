@@ -1,15 +1,17 @@
-import {onUnmounted, ref, watch} from 'vue';
-import {useTimer} from '@/composable/useTimer';
-import {Card} from "@/types/Card.ts";
-import {GameLogic} from "@/types/GameLogic.ts";
-import {DefaultGameModeValues, GameMode, useGameStore} from "@/store/game.ts";
-import {useMaxFlips} from "@/composable/useMaxFlips.ts";
+import { onUnmounted, ref, watch } from 'vue';
+import { useTimer } from '@/composable/useTimer';
+import { Card } from "@/types/Card.ts";
+import { GameLogic } from "@/types/GameLogic.ts";
+import { DefaultGameModeValues, GameMode, useGameStore } from "@/store/game.ts";
+import { useMaxFlips } from "@/composable/useMaxFlips.ts";
+import {fetchImages} from "@/utils/APIClient.ts";
 import { router } from '@/routing/router';
 
 export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
     const level = ref<number>(1);
     const cards = ref<Card[]>([]);
     const flippedCards = ref<Card[]>([]);
+    const cachedImages = ref<string[]>([]);
     const isLevelComplete = ref<boolean>(false);
 
     const {remainingTime, setRemainingTime, startTimer, pauseTimer, resumeTimer, resetTimer} = useTimer(baseTime, gameOver);
@@ -17,11 +19,17 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
 
     const gameStore = useGameStore();
 
-    const generateCards = (): void => {
+    const generateCards = async (): Promise<void> => {
         const numCards = level.value * 2 + 2;
-        const newCards: Card[] = Array.from({length: numCards}, (_, index): Card => ({
+        const numUniqueImages = numCards / 2;
+
+        const images = await fetchImages(numUniqueImages);
+        cachedImages.value = images;
+
+        const newCards: Card[] = Array.from({ length: numCards }, (_, index): Card => ({
             id: index,
-            image_id: Math.floor(index / 2) + 1,
+            image_id: Math.floor(index / 2),
+            image_url: images[Math.floor(index / 2)],
             is_flipped: false,
             is_matched: false,
         }));
