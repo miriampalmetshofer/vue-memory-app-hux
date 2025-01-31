@@ -5,6 +5,7 @@ import {ref, onMounted, onBeforeUnmount, watch} from 'vue';
 import {DefaultGameModeValues, GameMode} from "@/store/game.ts";
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import LevelCompleteDialog from "@/components/LevelCompleteDialog.vue";
+import { saveGameToStorage } from '@/composable/saveGameToStorage';
 import GameScreenHeader from "@/components/GameScreenHeader.vue";
 
 const {
@@ -33,6 +34,7 @@ const updateCardSize = () => {
 watch(cards, updateCardSize);
 
 const navToStartScreen = () => {
+  saveGameToStorage();
   router.push('/');
 };
 
