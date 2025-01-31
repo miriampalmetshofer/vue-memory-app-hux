@@ -74,7 +74,7 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
       const game: GameData = {
         nickname: gameStore.nickname,
         gameMode: gameStore.gameMode,
-        level: gameStore.level + 1,
+        level: gameStore.level - 1,
       };
       storedGames.push(game);
       localStorage.setItem(GAMES_DATA_STORAGE_KEY, JSON.stringify(storedGames));
@@ -95,6 +95,7 @@ export function useGameLogic(baseTime: number, baseFlips: number): GameLogic {
 
     const advanceToNextLevel = () => {
         level.value += 1;
+        gameStore.updateLevel(level.value)
         if (gameStore.gameMode === GameMode.TIMER) {
             increaseTimer();
         } else {
